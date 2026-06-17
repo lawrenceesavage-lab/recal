@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recalibration Questionnaire — Fillable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0c;
+    --surface:#161617;
+    --surface-2:#1c1c1e;
+    --field:#0f0f10;
+    --line:#2a2a2d;
+    --line-soft:#202023;
+    --text:#ededee;
+    --dim:#a2a2a6;
+    --faint:#6b6b70;
+    --accent:#ededee;
+    --accent-bar:#d6d6d9;
+    --active:#f2f2f4;
+    --danger:#c9705f;
+    --ok:#7fb98a;
+    --radius:14px;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--sans);font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(120% 80% at 50% -10%,#161618 0%,var(--bg) 55%);
+    background-attachment:fixed;
+  }
+  a{color:inherit}
+
+  /* ---- top bar ---- */
+  .bar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,11,12,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .bar-inner{
+    max-width:880px;margin:0 auto;padding:13px 22px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .brand{font-weight:700;letter-spacing:.28em;font-size:11px;color:var(--text);white-space:nowrap}
+  .bar-spacer{flex:1}
+  .save-state{font-size:11px;color:var(--faint);letter-spacing:.04em;min-width:54px;text-align:right;transition:color .3s}
+  .save-state.on{color:var(--ok)}
+  .btn{
+    font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.02em;
+    border-radius:9px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);
+    padding:9px 15px;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .btn:hover{border-color:#3a3a3e;background:#222224}
+  .btn-primary{background:var(--accent);color:#0b0b0c;border-color:var(--accent)}
+  .btn-primary:hover{background:#fff;border-color:#fff}
+  .btn-ghost{background:transparent}
+  .btn-danger:hover{border-color:var(--danger);color:var(--danger)}
+
+  /* ---- masthead ---- */
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  .head{padding:54px 0 30px;border-bottom:1px solid var(--line-soft)}
+  .eyebrow{font-size:11px;letter-spacing:.34em;color:var(--faint);font-weight:600;text-transform:uppercase}
+  .head h1{font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:16px 0 14px}
+  .head p{color:var(--dim);max-width:60ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:22px;font-size:13px;color:var(--dim)}
+  .meta b{color:var(--text);font-weight:600}
+  .note{
+    margin-top:24px;border-left:2px solid var(--accent-bar);background:var(--surface);
+    border-radius:0 10px 10px 0;padding:15px 18px;color:var(--dim);font-size:13.5px;
+  }
+
+  /* ---- sections ---- */
+  .section{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:500;letter-spacing:.04em}
+  .sec-tag{font-size:10px;letter-spacing:.26em;font-weight:700;color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:3px 8px;text-transform:uppercase}
+  .sec-head h2{font-size:23px;font-weight:700;letter-spacing:-.01em;margin:0}
+  .sec-intro{color:var(--dim);font-size:13.5px;margin:0 0 22px;max-width:66ch}
+
+  .block{margin-bottom:22px}
+  .block:last-child{margin-bottom:0}
+  .block-label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:12px}
+
+  /* fields */
+  .field{margin-bottom:13px}
+  .field:last-child{margin-bottom:0}
+  .field > label{display:block;font-size:13.5px;color:var(--dim);margin-bottom:6px}
+  input[type=text],textarea,.pcell{
+    width:100%;font-family:var(--sans);font-size:14.5px;color:var(--text);
+    background:var(--field);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px;transition:.15s;outline:none;
+  }
+  textarea{resize:vertical;min-height:46px;line-height:1.5}
+  input[type=text]:focus,textarea:focus,.pcell:focus{border-color:#4a4a50;background:#141416}
+  input::placeholder,textarea::placeholder{color:#56565b}
+  .q{margin-bottom:16px}
+  .q .qlabel{font-size:14px;color:var(--text);margin-bottom:7px;font-weight:500}
+  .q .qnum{font-family:var(--mono);color:var(--faint);font-size:12px;margin-right:8px}
+
+  /* rating pills */
+  .rate-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+  .rate-row:last-child{border-bottom:none}
+  .rate-label{font-size:14px;color:var(--text);flex:1;min-width:160px}
+  .pills{display:flex;gap:5px;flex-wrap:wrap}
+  .pill{
+    width:30px;height:30px;border-radius:7px;border:1px solid var(--line);
+    background:var(--field);color:var(--faint);font-size:12.5px;font-family:var(--mono);
+    cursor:pointer;transition:.12s;display:flex;align-items:center;justify-content:center;
+  }
+  .pill:hover{border-color:#45454a;color:var(--dim)}
+  .pill.sel{background:var(--active);color:#0b0b0c;border-color:var(--active);font-weight:600}
+
+  /* checklist */
+  .checks{display:flex;flex-wrap:wrap;gap:8px}
+  .chk{
+    font-size:13.5px;color:var(--dim);background:var(--field);border:1px solid var(--line);
+    border-radius:999px;padding:8px 14px;cursor:pointer;transition:.12s;user-select:none;
+  }
+  .chk:hover{border-color:#45454a;color:var(--text)}
+  .chk.sel{background:var(--active);color:#0b0b0c;border-color:var(--active);font-weight:600}
+
+  /* percent */
+  .pct-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+  .pct-row:last-child{border-bottom:none}
+  .pct-label{font-size:14px;color:var(--text);flex:1}
+  .pct-input{display:flex;align-items:center;gap:6px}
+  .pct-input input{width:74px;text-align:right;background:var(--field);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:14px;padding:8px 10px}
+  .pct-input input:focus{border-color:#4a4a50;outline:none}
+  .pct-input .sym{color:var(--faint);font-family:var(--mono);font-size:14px}
+
+  /* tables */
+  .tbl-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:12px}
+  .trow{display:grid;border-bottom:1px solid var(--line-soft)}
+  .trow:last-child{border-bottom:none}
+  .trow.thead{background:var(--surface)}
+  .trow.thead .tcell{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:11px 12px}
+  .tcell{padding:0;border-right:1px solid var(--line-soft);position:relative}
+  .tcell:last-child{border-right:none}
+  .tcell input{border:none;border-radius:0;background:transparent;padding:11px 12px;font-size:13.5px}
+  .tcell input:focus{background:#141416;box-shadow:inset 0 0 0 1px #3a3a40}
+  .trm{display:flex;align-items:center;justify-content:center;color:var(--faint);cursor:pointer;font-size:18px;line-height:1;transition:.12s}
+  .trm:hover{color:var(--danger)}
+  .example{font-size:12px;color:var(--faint)}
+  .example b{color:var(--dim);font-weight:600}
+  .add-row{font-size:12.5px;color:var(--dim);background:transparent;border:1px dashed var(--line);border-radius:9px;padding:9px 14px;cursor:pointer;transition:.15s}
+  .add-row:hover{border-color:#45454a;color:var(--text);border-style:solid}
+  .covered{margin-top:14px;font-size:12.5px;color:var(--faint);line-height:1.7}
+  .covered b{color:var(--dim);font-weight:600;display:block;margin-bottom:3px;letter-spacing:.04em}
+
+  .attach{display:flex;align-items:flex-start;gap:10px;padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--surface);margin-top:6px}
+  .attach .chk{margin-top:1px}
+
+  /* footer actions */
+  .foot{padding:40px 0 90px;text-align:center}
+  .foot .disclaimer{font-size:12px;color:var(--faint);max-width:62ch;margin:24px auto 0;line-height:1.7}
+
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:22px}
+  .modal-bg.open{display:flex}
+  .modal{background:#101011;border:1px solid var(--line);border-radius:16px;max-width:720px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line-soft)}
+  .modal-head h3{margin:0;font-size:16px;font-weight:700}
+  .modal-head .x{margin-left:auto;cursor:pointer;color:var(--faint);font-size:22px;line-height:1;border:none;background:none}
+  .modal-head .x:hover{color:var(--text)}
+  .modal-body{padding:0;overflow:auto;flex:1}
+  #output{width:100%;height:100%;min-height:340px;border:none;background:#0c0c0d;color:#dcdce0;font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:18px 20px;resize:none;outline:none}
+  .modal-foot{display:flex;gap:10px;padding:15px 20px;border-top:1px solid var(--line-soft)}
+  .count{font-size:11.5px;color:var(--faint);align-self:center;margin-right:auto;font-family:var(--mono)}
+
+  @media (max-width:560px){
+    .head h1{font-size:31px}
+    .wrap{padding:0 16px}
+    .bar-inner{padding:11px 16px}
+    .brand{display:none}
+    .rate-label{min-width:120px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+  :focus-visible{outline:2px solid #6da0ff;outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="brand">LAWRENCE ELLIOT</span>
+    <span class="bar-spacer"></span>
+    <span class="save-state" id="saveState"></span>
+    <button class="btn btn-ghost btn-danger" id="clearBtn">Clear</button>
+    <button class="btn btn-ghost" id="jsonBtn" title="Download your raw answers as a data file for your coach">Download data</button>
+    <button class="btn btn-primary" id="genBtn">Generate message</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Pre-call recalibration · June 2026</div>
+    <h1>The Recalibration Questionnaire</h1>
+    <p>A complete picture of where you are right now: body, mind, protocol, nutrition, training and compliance. Fill it in below — it saves automatically — then hit <b>Generate message</b> to assemble everything into one block you can copy and send before your call.</p>
+    <div class="meta">
+      <span>Return by <b>Before your call, in one message</b></span>
+      <span>Classification <b>Confidential · client eyes only</b></span>
+    </div>
+    <div class="note">Give exact, current figures wherever you can — including the unflattering ones. Where you can't remember precisely, put your best honest estimate rather than leaving it blank. Don't answer "same as before" or "the usual"; specifics are what make the next phase fit.</div>
+    <div class="note" style="border-left-color:var(--danger)"><b>How to send this back:</b> when you're done, tap <b>Generate message</b> at the top, then copy the block and send it to me as a normal message. Or tap <b>Download data</b> and send me that file. Do not send this questionnaire file back on its own: your answers are saved in your browser, not inside the file, so the file alone would reach me blank.</div>
+  </header>
+
+  <div id="form"></div>
+
+  <div class="foot">
+    <button class="btn btn-primary" id="genBtn2" style="font-size:14px;padding:12px 22px">Generate message to send</button>
+    <p class="disclaimer">This questionnaire is confidential and held for coaching use only. It is not medical advice. Pharmacological decisions require an independent prescribing physician familiar with your full history and do not substitute for clinical care.</p>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Your message</h3>
+      <button class="x" id="closeModal" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body"><textarea id="output" spellcheck="false"></textarea></div>
+    <div class="modal-foot">
+      <span class="count" id="charCount"></span>
+      <button class="btn" id="downloadBtn">Download .txt</button>
+      <button class="btn btn-primary" id="copyBtn">Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SCHEMA — the whole questionnaire defined as data.
+   Block types: fields | questions | ratings | checklist
+                | percents | table | attach | covered
+   ============================================================ */
+const SCHEMA = [
+  { id:"body", tag:"Body", num:"01", title:"Current physical status",
+    intro:"Your current measurements, taken consistently. Weight in the morning, fasted. Waist at the navel, morning, relaxed.",
+    blocks:[
+      { type:"fields", label:"Measurements", items:[
+        {k:"body_bw",   l:"Current bodyweight"},
+        {k:"body_bw7",  l:"Average bodyweight over the last 7 days (if known)"},
+        {k:"body_waist",l:"Current waist (morning, relaxed, at navel)"},
+      ]},
+      { type:"attach", k:"body_photos", text:"Progress photos — front, side and back, same lighting, relaxed not pumped. Tick to confirm you'll attach them to the same message." },
+      { type:"checklist", label:"Visible changes since we last spoke", k:"body_changes",
+        options:["Leaner","Softer","Fuller","Flatter","More watery","More muscular","No obvious change"] },
+    ]},
+
+  { id:"mind", tag:"Mind", num:"02", title:"Mood, wellbeing and mental state",
+    intro:"Rate each from 1 to 10, then answer in your own words.",
+    blocks:[
+      { type:"ratings", k:"mind", items:[
+        {k:"mood",l:"Mood"},{k:"motivation",l:"Motivation"},{k:"confidence",l:"Confidence"},
+        {k:"anxiety",l:"Anxiety / stress"},{k:"irritability",l:"Irritability"},
+        {k:"stability",l:"Emotional stability"},{k:"clarity",l:"Mental clarity"},
+        {k:"focus",l:"Focus / productivity"},{k:"discipline",l:"Discipline / consistency"},
+        {k:"satisfaction",l:"General life satisfaction"},
+      ]},
+      { type:"questions", k:"mind_q", items:[
+        "How have you felt mentally over the last month?",
+        "Driven, flat, anxious, overwhelmed, aggressive, low, distracted, or emotionally stable?",
+        "Has your self-confidence improved, declined, or stayed the same?",
+        "Are you avoiding anything — training, diet, work, relationships, routine?",
+        "What has been the main psychological bottleneck recently?",
+        "Do you feel in control of your routine, or reacting to life?",
+        "Are you enjoying the process, tolerating it, or resisting it?",
+      ]},
+    ]},
+
+  { id:"exec", tag:"Execution", num:"03", title:"Performance and execution",
+    intro:"How the plan is actually running day to day. Answer each one directly.",
+    blocks:[
+      { type:"questions", k:"exec_q", items:[
+        "How productive have you been in work and life recently?",
+        "Has training performance improved, declined, or stayed the same?",
+        "Stronger, weaker, or roughly the same as a month ago?",
+        "Are you getting good pumps?",
+        "Are you recovering between sessions?",
+        "Athletic, sluggish, tight, inflamed, or run down?",
+        "Are you procrastinating more than usual?",
+        "Executing the plan without thinking, or does it all feel like effort?",
+        "What part of the plan currently feels easiest?",
+        "What part of the plan currently feels hardest?",
+      ]},
+    ]},
+
+  { id:"recovery", tag:"Recovery", num:"04", title:"Sleep, recovery and energy",
+    intro:"Sleep sets the ceiling on everything else. Give the honest picture.",
+    blocks:[
+      { type:"fields", items:[{k:"sleep_dur",l:"Average sleep duration"}] },
+      { type:"ratings", k:"rec", items:[
+        {k:"sleep_q",l:"Sleep quality"},{k:"energy_am",l:"Morning energy"},
+        {k:"energy_pm",l:"Afternoon energy"},{k:"energy_eve",l:"Evening energy"},
+        {k:"fatigue",l:"Current fatigue level"},{k:"soreness",l:"Soreness / recovery"},
+      ]},
+      { type:"questions", k:"rec_q", items:[
+        "Do you wake rested?","Do you wake during the night?",
+      ]},
+      { type:"checklist", label:"Tick any that apply", k:"rec_check",
+        options:["Snoring","Signs of sleep apnoea","Night sweats","Restless sleep","Waking with a dry mouth"] },
+    ]},
+
+  { id:"vitality", tag:"Vitality", num:"05", title:"Libido, hormones and general vitality",
+    intro:"These markers tell me how your hormonal picture is tracking between bloods.",
+    blocks:[
+      { type:"ratings", k:"vit", items:[
+        {k:"libido",l:"Libido"},{k:"erectile",l:"Erectile function / performance (if relevant)"},
+        {k:"morning",l:"Morning erections (if relevant)"},{k:"drive",l:"Drive / aggression"},
+        {k:"calm",l:"Calmness / stability"},{k:"vitality",l:"Overall vitality"},
+      ]},
+      { type:"questions", k:"vit_q", items:[
+        "Has libido changed recently?","Has mood changed recently?",
+        "Any signs of high/low oestrogen, high prolactin, androgenic sides, or hormonal instability?",
+      ]},
+      { type:"checklist", label:"Tick any that apply", k:"vit_check",
+        options:["Acne","Hair shedding","Oily skin","Water retention","Nipple sensitivity","Emotional volatility","Unusual fatigue"] },
+    ]},
+
+  { id:"nutrition", tag:"Nutrition", num:"06", title:"Current nutrition",
+    intro:"Specifics, not a description of the plan I gave you. What you are actually eating now.",
+    blocks:[
+      { type:"fields", label:"Intake", items:[
+        {k:"cal",l:"Current calories (if tracking)"},{k:"protein",l:"Protein (g)"},
+        {k:"carbs",l:"Carbs (g)"},{k:"fats",l:"Fats (g)"},
+        {k:"offplan",l:"Off-plan meals per week recently"},{k:"alcohol",l:"Alcohol intake, if any"},
+      ]},
+      { type:"fields", label:"Typical day of eating", items:[
+        {k:"meal1",l:"Meal 1"},{k:"meal2",l:"Meal 2"},{k:"meal3",l:"Meal 3"},
+        {k:"snacks",l:"Snacks"},{k:"fluids",l:"Fluids"},
+      ]},
+      { type:"ratings", k:"nut", items:[
+        {k:"appetite",l:"Appetite"},{k:"hunger",l:"Hunger"},
+        {k:"cravings",l:"Cravings"},{k:"digestion",l:"Digestion"},
+      ]},
+      { type:"checklist", label:"Tick any digestive issues that apply", k:"nut_check",
+        options:["Bloating","Reflux","Constipation","Diarrhoea","Nausea","Food intolerances"] },
+    ]},
+
+  { id:"training", tag:"Training", num:"07", title:"Training",
+    intro:"What you are actually running in the gym, and where it is moving or stalling.",
+    blocks:[
+      { type:"fields", items:[
+        {k:"split",l:"Current training split"},
+        {k:"sess_done",l:"Sessions completed per week (last month)"},
+        {k:"sess_miss",l:"Sessions missed per week, on average"},
+        {k:"progressing",l:"Exercises currently progressing", multi:true},
+        {k:"stalled",l:"Exercises currently stalled or regressed", multi:true},
+        {k:"skipping",l:"Muscle groups you've been skipping or undertraining", multi:true},
+        {k:"injuries",l:"Injuries, pain, tightness, or movement issues", multi:true},
+        {k:"avoiding",l:"Exercises you're avoiding, and why", multi:true},
+      ]},
+      { type:"ratings", k:"train", items:[
+        {k:"intensity",l:"Current training intensity"},{k:"enjoy",l:"Current enjoyment of training"},
+      ]},
+    ]},
+
+  { id:"activity", tag:"Activity", num:"08", title:"Cardio, steps and activity",
+    intro:"Your background activity, not only your sessions. This is the part that drifts quietly.",
+    blocks:[
+      { type:"fields", items:[
+        {k:"steps",l:"Average daily steps"},{k:"cardio_type",l:"Cardio type"},
+        {k:"cardio_dur",l:"Cardio duration"},{k:"cardio_freq",l:"Cardio frequency"},
+        {k:"cardio_int",l:"Cardio intensity"},
+      ]},
+      { type:"questions", k:"act_q", items:[
+        "Has your daily activity changed recently?","Are you more sedentary than usual?",
+        "Any travel, work changes, or schedule disruption?",
+      ]},
+    ]},
+
+  { id:"supps", tag:"Supplements", num:"09", title:"Current supplementation",
+    intro:"The exact current list — including what you take occasionally and what you keep forgetting. Don't write \"same as before\".",
+    blocks:[
+      { type:"table", k:"supps_tbl",
+        columns:[{k:"name",l:"Supplement"},{k:"dose",l:"Dose"},{k:"freq",l:"Frequency"},{k:"time",l:"Timing"},{k:"consistent",l:"Consistent?"}],
+        example:"e.g.  Magnesium glycinate · 400 mg · Daily · Before bed · Consistent",
+        rows:4 },
+      { type:"covered", title:"Make sure you've covered",
+        items:["Vitamins & minerals","Health supplements","Digestive support","Sleep supplements","Cognitive / nootropic agents","Pre-workout / stimulants","Anything taken occasionally"] },
+    ]},
+
+  { id:"pharma", tag:"Pharmacology", num:"10", title:"Current AAS, PEDs, peptides and hormonal compounds",
+    intro:"If this applies to you, list everything currently in use. Full accuracy — there's no judgement here. Without an accurate list I can't assess risk or make intelligent adjustments. Most important: flag anything you added, removed, increased or reduced without updating me.",
+    blocks:[
+      { type:"table", k:"pharma_tbl",
+        columns:[{k:"name",l:"Compound"},{k:"dose",l:"Dose"},{k:"freq",l:"Frequency"},{k:"started",l:"Started"},{k:"notes",l:"Notes / side effects"}],
+        example:"e.g.  Testosterone enanthate · 250 mg/week · Split Mon/Thu · 8 weeks ago · No major sides",
+        rows:4 },
+      { type:"covered", title:"Make sure you've covered",
+        items:["Testosterone or TRT","Other anabolic steroids","SARMs","Growth hormone","GLP-1s","Fat-loss drugs","Peptides","Ancillaries: AIs, SERMs, cabergoline / pramipexole, HCG / HMG, BP meds, finasteride / dutasteride, thyroid meds, stimulants, sleep meds"] },
+    ]},
+
+  { id:"markers", tag:"Markers", num:"11", title:"Health markers and symptoms",
+    intro:"The numbers I use to keep you safe while we push. Send what you have.",
+    blocks:[
+      { type:"fields", items:[
+        {k:"bp",l:"Current blood pressure (if known)"},
+        {k:"rhr",l:"Resting heart rate (if known)"},
+      ]},
+      { type:"attach", k:"markers_bloods", text:"Recent bloodwork — tick to confirm you'll attach it to the same message." },
+      { type:"checklist", label:"Tick any new symptoms", k:"markers_check",
+        options:["Headaches","Chest tightness","Shortness of breath","Dizziness","Oedema / water retention","Numbness / tingling","Unusual fatigue","Digestive issues","Sleep apnoea symptoms","Libido changes","Mood instability","Panic / anxiety spikes","Skin changes"] },
+      { type:"questions", k:"markers_q", items:[
+        "Is there anything you're concerned about health-wise?",
+      ]},
+    ]},
+
+  { id:"compliance", tag:"Compliance", num:"12", title:"Compliance over the last month",
+    intro:"A realistic percentage for each. Honest numbers tell me where to intervene; inflated ones cost us the next month.",
+    blocks:[
+      { type:"percents", k:"comp", items:[
+        {k:"nutrition",l:"Nutrition compliance"},{k:"training",l:"Training compliance"},
+        {k:"cardio",l:"Cardio compliance"},{k:"steps",l:"Steps / activity compliance"},
+        {k:"sleep",l:"Sleep routine compliance"},{k:"protocol",l:"Supplement / protocol compliance"},
+        {k:"comms",l:"Communication / check-in compliance"},
+      ]},
+      { type:"questions", k:"comp_q", items:[
+        "Where did you follow the plan well?","Where did you drift?","What caused the drift?",
+        "Discipline, stress, time, appetite, fatigue, confusion, lack of structure, injury, travel, or something else?",
+      ]},
+    ]},
+
+  { id:"bottlenecks", tag:"Bottlenecks", num:"13", title:"Current bottlenecks",
+    intro:"Name the three things most in the way right now. Common ones: poor sleep, low mood, low drive, high stress, poor appetite, digestive issues, work schedule, travel, injury, low confidence, poor routine, social eating, lack of accountability, training boredom, stimulant crash, relationship / family / financial stress.",
+    blocks:[
+      { type:"fields", label:"Your top three", items:[
+        {k:"bn1",l:"1"},{k:"bn2",l:"2"},{k:"bn3",l:"3"},
+      ]},
+    ]},
+
+  { id:"goal", tag:"Goal", num:"14", title:"Goal reconfirmation",
+    intro:"What we're working toward now. Goals move, and the plan has to move with them.",
+    blocks:[
+      { type:"checklist", label:"Your current main goal", k:"goal_type",
+        options:["Fat loss","Muscle gain","Recomposition","Strength","Performance","Health restoration","Mental performance","Confidence / identity change","Event / photoshoot / holiday","Maintenance"] },
+      { type:"questions", k:"goal_q", items:[
+        "Has your goal changed since we last spoke?","Do you still care about the original target?",
+        "What date or event are we working toward now?",
+        "How aggressive do you want the next phase: conservative, moderate, or aggressive?",
+        "What are you willing to sacrifice right now?","What are you not willing to sacrifice right now?",
+      ]},
+    ]},
+
+  { id:"support", tag:"Support", num:"15", title:"What you need from me",
+    intro:"Be direct. This decides how I run the next four weeks with you.",
+    blocks:[
+      { type:"questions", k:"sup_q", items:[
+        "Do you need a full plan reset?","Do you need stricter accountability?",
+        "Do you need more flexibility?","Do you need a simpler plan?","Do you need a harder push?",
+        "Do you need to pull back and restore recovery and health first?",
+        "Do you need a new training phase?","Do you need nutrition adjusted?",
+        "Do you need help with routine and structure?",
+        "What would make this coaching more useful over the next four weeks?",
+      ]},
+    ]},
+
+  { id:"agenda", tag:"Agenda", num:"16", title:"Call agenda",
+    intro:"The three most important things you want to discuss — so we use the call properly instead of reconstructing the last month.",
+    blocks:[
+      { type:"fields", label:"What you want to discuss", items:[
+        {k:"ag1",l:"1"},{k:"ag2",l:"2"},{k:"ag3",l:"3"},
+      ]},
+    ]},
+];
+
+/* ============================================================
+   STATE + STORAGE (works in Claude's renderer via window.storage,
+   and locally via localStorage; degrades to memory-only if neither)
+   ============================================================ */
+const STORE_KEY = "recal_answers_2026_06";
+let state = {};
+
+const storage = {
+  async load(){
+    try{
+      if(window.storage && window.storage.get){
+        const r = await window.storage.get(STORE_KEY);
+        return r && r.value ? JSON.parse(r.value) : {};
+      }
+    }catch(e){}
+    try{ const v = localStorage.getItem(STORE_KEY); return v ? JSON.parse(v) : {}; }catch(e){}
+    return {};
+  },
+  async save(obj){
+    const s = JSON.stringify(obj);
+    let ok=false;
+    try{ if(window.storage && window.storage.set){ await window.storage.set(STORE_KEY, s); ok=true; } }catch(e){}
+    try{ localStorage.setItem(STORE_KEY, s); ok=true; }catch(e){}
+    return ok;
+  },
+  async clear(){
+    try{ if(window.storage && window.storage.delete) await window.storage.delete(STORE_KEY); }catch(e){}
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  }
+};
+
+let saveTimer=null;
+function markSaving(){
+  const el=document.getElementById("saveState");
+  el.textContent="Saving…"; el.classList.remove("on");
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    await storage.save(state);
+    el.textContent="Saved"; el.classList.add("on");
+    setTimeout(()=>{ if(el.textContent==="Saved") el.classList.remove("on"); }, 1400);
+  }, 350);
+}
+function set(key,val){ if(val===""||val==null||(Array.isArray(val)&&!val.length)) delete state[key]; else state[key]=val; markSaving(); }
+function get(key,def){ return state[key]!==undefined ? state[key] : def; }
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderField(it){
+  const v = esc(get(it.k,""));
+  if(it.multi){
+    return `<div class="field"><label>${esc(it.l)}</label><textarea data-k="${it.k}">${v}</textarea></div>`;
+  }
+  return `<div class="field"><label>${esc(it.l)}</label><input type="text" data-k="${it.k}" value="${v}"></div>`;
+}
+function renderQuestions(k,items){
+  return items.map((q,i)=>{
+    const key=`${k}_${i}`;
+    return `<div class="q"><div class="qlabel"><span class="qnum">${String(i+1).padStart(2,"0")}</span>${esc(q)}</div><textarea data-k="${key}">${esc(get(key,""))}</textarea></div>`;
+  }).join("");
+}
+function renderRatings(k,items){
+  return `<div class="ratings">`+items.map(it=>{
+    const key=`${k}_${it.k}`, cur=get(key,null);
+    const pills=Array.from({length:10},(_,i)=>{
+      const n=i+1; return `<button type="button" class="pill ${cur===n?"sel":""}" data-rate="${key}" data-val="${n}">${n}</button>`;
+    }).join("");
+    return `<div class="rate-row"><span class="rate-label">${esc(it.l)}</span><div class="pills">${pills}</div></div>`;
+  }).join("")+`</div>`;
+}
+function renderPercents(k,items){
+  return items.map(it=>{
+    const key=`${k}_${it.k}`;
+    return `<div class="pct-row"><span class="pct-label">${esc(it.l)}</span><div class="pct-input"><input type="text" inputmode="numeric" data-k="${key}" value="${esc(get(key,""))}" placeholder="—"><span class="sym">%</span></div></div>`;
+  }).join("");
+}
+function renderChecklist(k,options){
+  return `<div class="checks">`+options.map(o=>{
+    const sel=(get(k,[])||[]).includes(o);
+    return `<button type="button" class="chk ${sel?"sel":""}" data-chk="${k}" data-val="${esc(o)}">${esc(o)}</button>`;
+  }).join("")+`</div>`;
+}
+function renderAttach(b){
+  const sel=get(b.k,false);
+  return `<div class="attach"><button type="button" class="chk ${sel?"sel":""}" data-toggle="${b.k}">${sel?"✓ Will attach":"Attach"}</button><span style="font-size:13.5px;color:var(--dim)">${esc(b.text)}</span></div>`;
+}
+function renderTable(b){
+  const rows = get(b.k, Array.from({length:b.rows},()=>({})));
+  const head = `<div class="trow thead" style="grid-template-columns:${gridCols(b)}">`+b.columns.map(c=>`<div class="tcell">${esc(c.l)}</div>`).join("")+`<div class="tcell"></div></div>`;
+  const body = rows.map((row,ri)=>`<div class="trow" style="grid-template-columns:${gridCols(b)}">`+
+      b.columns.map(c=>`<div class="tcell"><input type="text" data-tbl="${b.k}" data-ri="${ri}" data-col="${c.k}" value="${esc(row[c.k]||"")}" placeholder=""></div>`).join("")+
+      `<div class="tcell trm" data-rm="${b.k}" data-ri="${ri}" title="Remove row">×</div></div>`).join("");
+  return `<div class="example" style="margin-bottom:10px">${esc(b.example)}</div>`+
+         `<div class="tbl-wrap" data-tblwrap="${b.k}">${head}${body}</div>`+
+         `<button type="button" class="add-row" data-add="${b.k}">+ Add row</button>`;
+}
+function gridCols(b){
+  // last narrow column for remove
+  if(b.k==="pharma_tbl") return "1.1fr .8fr .9fr .8fr 1.4fr 38px";
+  return "1.2fr .8fr .9fr .9fr 1fr 38px";
+}
+function renderCovered(b){
+  return `<div class="covered"><b>${esc(b.title)}</b>${b.items.map(esc).join(" · ")}</div>`;
+}
+
+function renderBlock(b){
+  let inner="";
+  switch(b.type){
+    case "fields":    inner=b.items.map(renderField).join(""); break;
+    case "questions": inner=renderQuestions(b.k,b.items); break;
+    case "ratings":   inner=renderRatings(b.k,b.items); break;
+    case "percents":  inner=renderPercents(b.k,b.items); break;
+    case "checklist": inner=renderChecklist(b.k,b.options); break;
+    case "attach":    return renderAttach(b);
+    case "table":     inner=renderTable(b); break;
+    case "covered":   return renderCovered(b);
+  }
+  const lbl = b.label?`<div class="block-label">${esc(b.label)}</div>`:"";
+  return `<div class="block">${lbl}${inner}</div>`;
+}
+
+function renderForm(){
+  const html = SCHEMA.map(sec=>`
+    <section class="section" id="sec-${sec.id}">
+      <div class="sec-head"><span class="sec-num">${sec.num}</span><span class="sec-tag">${esc(sec.tag)}</span><h2>${esc(sec.title)}</h2></div>
+      <p class="sec-intro">${esc(sec.intro)}</p>
+      ${sec.blocks.map(renderBlock).join("")}
+    </section>`).join("");
+  document.getElementById("form").innerHTML = html;
+}
+
+/* ============================================================
+   EVENTS (delegated)
+   ============================================================ */
+function wire(){
+  const form=document.getElementById("form");
+
+  form.addEventListener("input", e=>{
+    const t=e.target;
+    if(t.dataset.k!==undefined){ set(t.dataset.k, t.value); }
+    else if(t.dataset.tbl!==undefined){
+      const k=t.dataset.tbl, ri=+t.dataset.ri, col=t.dataset.col;
+      const rows = get(k, []).slice ? JSON.parse(JSON.stringify(get(k,[]))) : [];
+      const cur = get(k, null) || [];
+      const arr = JSON.parse(JSON.stringify(cur.length?cur:defaultRows(k)));
+      while(arr.length<=ri) arr.push({});
+      arr[ri][col]=t.value;
+      set(k, arr);
+    }
+  });
+
+  form.addEventListener("click", e=>{
+    const t=e.target;
+    if(t.dataset.rate!==undefined){
+      const key=t.dataset.rate, val=+t.dataset.val;
+      const cur=get(key,null);
+      set(key, cur===val?null:val);   // tap again to clear
+      t.closest(".pills").querySelectorAll(".pill").forEach(p=>p.classList.toggle("sel", +p.dataset.val===get(key,null)));
+    }
+    else if(t.dataset.chk!==undefined){
+      const k=t.dataset.chk, val=t.dataset.val;
+      const arr=(get(k,[])||[]).slice();
+      const i=arr.indexOf(val);
+      if(i>=0) arr.splice(i,1); else arr.push(val);
+      set(k,arr); t.classList.toggle("sel");
+    }
+    else if(t.dataset.toggle!==undefined){
+      const k=t.dataset.toggle, v=!get(k,false);
+      set(k,v); t.classList.toggle("sel",v); t.textContent=v?"✓ Will attach":"Attach";
+    }
+    else if(t.dataset.add!==undefined){
+      const k=t.dataset.add;
+      const arr=JSON.parse(JSON.stringify(get(k,null)||defaultRows(k)));
+      arr.push({}); set(k,arr); rerenderTable(k);
+    }
+    else if(t.dataset.rm!==undefined){
+      const k=t.dataset.rm, ri=+t.dataset.ri;
+      const arr=JSON.parse(JSON.stringify(get(k,null)||defaultRows(k)));
+      arr.splice(ri,1); if(!arr.length) arr.push({}); set(k,arr); rerenderTable(k);
+    }
+  });
+}
+function defaultRows(k){ const b=findBlock(k); return Array.from({length:b.rows},()=>({})); }
+function findBlock(k){ for(const s of SCHEMA) for(const b of s.blocks) if(b.k===k) return b; }
+function rerenderTable(k){
+  const b=findBlock(k);
+  const wrapHolder=document.querySelector(`[data-tblwrap="${k}"]`).parentElement;
+  // re-render just this block's table portion
+  const blockEl=document.querySelector(`[data-tblwrap="${k}"]`).closest(".block");
+  blockEl.innerHTML = renderTable(b);
+}
+
+/* ============================================================
+   COMPILE -> one message
+   ============================================================ */
+function val(k){ return get(k,""); }
+function compile(){
+  const L=[];
+  L.push("LAWRENCE ELLIOT · RECALIBRATION — June 2026");
+  L.push("Confidential · client eyes only");
+  L.push("");
+
+  for(const sec of SCHEMA){
+    const lines=[];
+    for(const b of sec.blocks){
+      if(b.type==="fields"){
+        b.items.forEach(it=>{ const v=val(it.k); if(v) lines.push(`${it.l}: ${v}`); });
+      }
+      else if(b.type==="questions"){
+        b.items.forEach((q,i)=>{ const v=val(`${b.k}_${i}`); if(v) lines.push(`${i+1}. ${q}\n   → ${v}`); });
+      }
+      else if(b.type==="ratings"){
+        const r=b.items.map(it=>{ const v=get(`${b.k}_${it.k}`,null); return v!=null?`${it.l}: ${v}/10`:null; }).filter(Boolean);
+        if(r.length) lines.push(r.join("  ·  "));
+      }
+      else if(b.type==="percents"){
+        const r=b.items.map(it=>{ const v=val(`${b.k}_${it.k}`); return v!==""?`${it.l}: ${v}%`:null; }).filter(Boolean);
+        if(r.length) lines.push(...r);
+      }
+      else if(b.type==="checklist"){
+        const v=get(b.k,[]); if(v&&v.length) lines.push(`${b.label||"Selected"}: ${v.join(", ")}`);
+      }
+      else if(b.type==="attach"){
+        if(get(b.k,false)) lines.push(`[Attaching: ${b.k==="body_photos"?"progress photos":"bloodwork"}]`);
+      }
+      else if(b.type==="table"){
+        const rows=(get(b.k,[])||[]).filter(r=>b.columns.some(c=>(r[c.k]||"").trim()));
+        rows.forEach(r=>{
+          const parts=b.columns.map(c=>(r[c.k]||"").trim()).filter(Boolean);
+          if(parts.length) lines.push(`• ${parts.join("  ·  ")}`);
+        });
+      }
+    }
+    if(lines.length){
+      L.push(`${sec.num} · ${sec.title.toUpperCase()}`);
+      L.push("—".repeat(34));
+      L.push(...lines);
+      L.push("");
+    }
+  }
+
+  if(L.length<=4) L.push("(No answers entered yet.)");
+  return L.join("\n").trim()+"\n";
+}
+
+/* ============================================================
+   MODAL + ACTIONS
+   ============================================================ */
+function openModal(){
+  const out=compile();
+  const ta=document.getElementById("output");
+  ta.value=out;
+  document.getElementById("charCount").textContent=`${out.length.toLocaleString()} characters`;
+  document.getElementById("modalBg").classList.add("open");
+}
+function closeModal(){ document.getElementById("modalBg").classList.remove("open"); }
+
+async function copyOut(){
+  const ta=document.getElementById("output");
+  const btn=document.getElementById("copyBtn");
+  try{ await navigator.clipboard.writeText(ta.value); }
+  catch(e){ ta.select(); document.execCommand("copy"); }
+  const o=btn.textContent; btn.textContent="Copied ✓";
+  setTimeout(()=>btn.textContent=o,1500);
+}
+function downloadOut(){
+  const blob=new Blob([document.getElementById("output").value],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="recalibration_june-2026.txt"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function downloadJSON(){
+  // Lossless, keyed export of every answer — the cleanest input for the coach's system.
+  const payload={ questionnaire:"recalibration", version:"2026-06", exported:new Date().toISOString(), answers:state };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="recalibration_june-2026_data.json"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+async function clearAll(){
+  if(!confirm("Clear every answer? This can't be undone.")) return;
+  state={}; await storage.clear(); renderForm();
+  const el=document.getElementById("saveState"); el.textContent="Cleared"; el.classList.remove("on");
+  window.scrollTo({top:0});
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  state = await storage.load();
+  renderForm();
+  wire();
+  document.getElementById("genBtn").onclick=openModal;
+  document.getElementById("genBtn2").onclick=openModal;
+  document.getElementById("jsonBtn").onclick=downloadJSON;
+  document.getElementById("clearBtn").onclick=clearAll;
+  document.getElementById("closeModal").onclick=closeModal;
+  document.getElementById("copyBtn").onclick=copyOut;
+  document.getElementById("downloadBtn").onclick=downloadOut;
+  document.getElementById("modalBg").addEventListener("click",e=>{ if(e.target.id==="modalBg") closeModal(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+})();
+</script>
+</body>
+</html>
