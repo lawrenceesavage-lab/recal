@@ -115,7 +115,7 @@
   .trow.thead{border-bottom:1px solid var(--ink)}
   .trow.thead .tcell{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:10px 10px 8px 0}
   .tcell{padding:0}
-  .tcell input{border:none;padding:11px 10px 11px 0;font-size:15px}
+  .tcell input{border:none;padding:11px 10px 11px 0;font-size:16px}
   .tcell input:focus{box-shadow:inset 0 -1px 0 var(--ink)}
   .trm{border:none;background:transparent;color:var(--faint);cursor:pointer;font-size:20px;line-height:1;width:100%;height:100%}
   .trm:hover{color:var(--ink)}
@@ -152,7 +152,7 @@
 
   @media (max-width:600px){
     .wrap,.bar-inner{padding-left:16px;padding-right:16px}
-    .doc,.save-state{display:none}
+    .doc{display:none}
     .strip{grid-template-columns:1fr 1fr}
     .lede{margin-left:0}
     .section h2{font-size:24px}
@@ -185,14 +185,14 @@
       <div><span>Return</span><b>One message</b></div>
       <div><span>Status</span><b>Confidential</b></div>
     </div>
-    <p class="lede">This resets the baseline before we choose the next step. It covers the months since June first, then your body, recovery, hormones, food, training, protocol and goals as they stand today. It takes around 30 minutes. Answers save as you type, so you can stop and come back.</p>
+    <p class="lede">This resets the baseline before we choose the next step. It covers the months since June first, then your body, recovery, hormones, food, training, protocol and goals as they stand today. Allow around 45 minutes, with your weigh-ins and training log to hand. Answers save as you type, so you can stop and come back.</p>
     <div class="stmt">
       <span class="caps">How to answer</span>
       <p>Give exact current figures, including the unflattering ones. If you can't remember precisely, give your best estimate and mark it as one. Avoid "same as before": the next step is built on the specifics.</p>
     </div>
     <div class="stmt">
       <span class="caps">How to send it back</span>
-      <p>When you're done, tap <b>Generate message</b>, copy the block and send it to me as a normal message. Or tap <b>Download data</b> and send me that file. Don't send this page back on its own: your answers are saved in your browser, so the file would reach me blank.</p>
+      <p>When you're done, tap <b>Generate message</b>, copy the block and send it to me as a normal message. Or tap <b>Download data</b> and send me that file. Don't send the link back on its own: your answers are saved in your browser, so I would see a blank form.</p>
     </div>
   </header>
 
@@ -202,7 +202,7 @@
     <button class="btn btn-primary" id="genBtn2" type="button">Generate message to send</button>
     <div class="stmt">
       <span class="caps">Disclaimer</span>
-      <p>This questionnaire is confidential and held for coaching use only. It is not medical advice. Pharmacological decisions require an independent prescribing physician familiar with your full history and do not substitute for clinical care.</p>
+      <p>This questionnaire is confidential and held for coaching use only. It is not medical advice. Pharmacological decisions require an independent prescribing physician familiar with your full history. This questionnaire does not substitute for clinical care.</p>
     </div>
     <div class="closing">
       <span class="yr">2026</span>
@@ -236,29 +236,30 @@
    so the parser preserves its answers in `unmatched`.
    ============================================================ */
 const SINCE = { id:"since", tag:"Since June", num:"00", title:"Since we last spoke", compileLast:true,
-  intro:"We last spoke on 17 June, after your June questionnaire. This section covers the months since: food and bodyweight, your protocol, the items left open in June, and the next experiment.",
+  intro:"Our last call was on 17 June, after your June questionnaire. This section covers the months since: food and bodyweight, your protocol, the items left open in June, and the experiment you asked about.",
   blocks:[
     { type:"questions", k:"since_food", label:"Food, bodyweight and strength", items:[
       "When did you start eating more? Give the date as near as you can, and your rough training-day calories and carbs before the increase.",
       "What did you add to raise your intake: a post-workout shake, a pre-bed meal, ordered meals at work, bigger portions? Name each one and how many days a week it happens.",
-      "Bodyweight: one reading from each of the last eight weeks with its date, or the weekly averages if your app shows them. Write it as one paragraph, with commas between entries. Add how often you weigh, the time of day and which scales.",
-      "Pick four or five main lifts, including one hamstring movement. For each, give load and reps in June and load and reps now. Write it as one paragraph, with commas between lifts.",
+      "Bodyweight: one reading from each of the last eight weeks with its date, or the weekly averages if you track them. Add how often you weigh, the time of day and which scales.",
+      "Pick four or five main lifts, including one hamstring movement. For each, give load and reps in June and load and reps now.",
     ]},
     { type:"questions", k:"since_proto", label:"Protocol since June", items:[
       "EQ: on the June call you had not started it. Have you started since? If yes, give the start date and say whether testosterone changed, and when. The doses go in the section 10 table. If no, write 'not started'.",
-      "Retatrutide: your June form had 2 mg a week, Monday and Thursday. If that has changed, say when and why. What does appetite do in the 48 hours after a dose? In March you reported weaker pumps on it. Where are they now?",
+      "Retatrutide: put your current weekly dose and days in the section 10 table. If either has changed since your June form, say when and why. What does appetite do in the 48 hours after a dose? In March you reported weaker pumps on it. How are they now?",
       "Anything else started, stopped or changed since June that I don't know about: growth hormone dose or timing, telmisartan dose, insulin, peptides, anything taken for focus?",
       "Which compounds or peptides do you have on hand that you are not using, opened or unopened? Include anything bought since June.",
-      "Bloods: any draw since the February panel? Give the date, the lab and who ordered it, and attach the results in section 11. If there has been none, write 'none'. Does a doctor or clinic oversee what you run? If so, say who.",
+      "Bloods: any draw since the February panel? If yes, give the date, the lab and who ordered it, and tick the bloodwork box in section 11. If no, write 'no draw'.",
+      "Does a doctor or clinic oversee what you run? If so, say who. If no one does, write 'no one'.",
     ]},
     { type:"attach", k:"since_whoop", attachLabel:"Whoop screenshots", text:"Whoop screenshots of your last 30 days of HRV, resting heart rate and sleep, if you are wearing it. Tick to confirm you'll attach them to the same message." },
     { type:"questions", k:"since_open", label:"Open items from June", items:[
       "In June we agreed to trial light cardio mid-afternoon on non-training days. Did you run it? If yes: how many weeks, how long each session, and what it did to your focus for the rest of the afternoon.",
       "ENT second opinion on the sinus polyps: booked, done or not yet? If done, say what they found and what they offered.",
     ]},
-    { type:"questions", k:"since_exp", label:"The next experiment", items:[
+    { type:"questions", k:"since_exp", label:"The experiment you asked about", items:[
       "You said you are looking for the next experiment. If you have one in mind, name it, with the compound if there is one. If you have none, write 'open'. Then say what you want it to change and which number would show that it worked.",
-      "Which of these do you own: a blood pressure cuff, a glucose meter, a CGM? If you have logged blood pressure or fasted morning glucose since June, give the readings with dates. Say where you log what you measure.",
+      "Which of these do you own: a blood pressure cuff, a glucose meter, a continuous glucose monitor (CGM)? If you have logged blood pressure or fasted morning glucose since June, give the seven most recent readings of each with dates. Say where you log what you measure.",
       "Is anything booked before the end of the year that would break your routine: travel, holidays, work trips? Give dates, and say whether your injectables go with you.",
     ]},
   ]};
@@ -468,7 +469,7 @@ const SCHEMA = [
         options:["Fat loss","Muscle gain","Recomposition","Strength","Performance","Health restoration","Mental performance","Confidence / identity change","Event / photoshoot / holiday","Maintenance"] },
       { type:"questions", k:"goal_q", items:[
         "Has your goal changed since we last spoke?","Do you still care about the original target?",
-        "What date or event are we working toward now?",
+        "What date or event are we working towards now?",
         "How aggressive do you want the next phase: conservative, moderate, or aggressive?",
         "What are you willing to sacrifice right now?","What are you not willing to sacrifice right now?",
       ]},
@@ -488,7 +489,7 @@ const SCHEMA = [
     ]},
 
   { id:"agenda", tag:"Agenda", num:"16", title:"Call agenda",
-    intro:"The three things you most want to cover, so the call goes on planning.",
+    intro:"The three things you most want to cover, so the call time goes on planning.",
     blocks:[
       { type:"fields", label:"What you want to discuss", items:[
         {k:"ag1",l:"1"},{k:"ag2",l:"2"},{k:"ag3",l:"3"},
@@ -678,7 +679,7 @@ function wire(){
 /* ============================================================
    COMPILE -> one message (format read by /recalibration's parser)
    ============================================================ */
-const flat = s => String(s).replace(/\s*\n+\s*/g, " / ").trim();
+const flat = s => String(s).trim().replace(/\s*\n+\s*/g, " / ");
 function compileSection(sec){
   const lines=[];
   for(const b of sec.blocks){
