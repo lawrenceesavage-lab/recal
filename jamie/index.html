@@ -192,7 +192,7 @@
     </div>
     <div class="stmt">
       <span class="caps">How to send it back</span>
-      <p>When you're done, tap <b>Generate message</b>, copy the block and send it to me as a normal message. Or tap <b>Download data</b> and send me that file. Don't send the link back on its own: your answers are saved in your browser, so I would see a blank form.</p>
+      <p>When you're done, tap <b>Generate message</b>, then <b>Copy to clipboard</b>, and paste it to me as a normal message. Don't send me a link: your answers are saved in your browser, so a link opens a blank form for me.</p>
     </div>
   </header>
 
@@ -755,6 +755,24 @@ function download(name, text, type){
   a.download=name; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
+/* Phones turn a download into a temporary blob: link that only works on that
+   device, so on phones the export buttons copy text instead. */
+const IS_PHONE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }catch(e){}
+  const ta=document.createElement("textarea");
+  ta.value=text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,text.length);
+  let ok=false; try{ ok=document.execCommand("copy"); }catch(e){}
+  ta.remove(); return ok;
+}
+function showText(text){
+  lastFocus=document.activeElement;
+  document.getElementById("output").value=text;
+  document.getElementById("charCount").textContent=`${text.length.toLocaleString("en-GB")} characters`;
+  document.getElementById("modalBg").classList.add("open");
+  document.getElementById("copyBtn").focus();
+}
 async function clearAll(){
   if(!confirm("Clear every answer? This can't be undone.")) return;
   state={}; await storage.clear(); renderForm();
@@ -768,9 +786,19 @@ async function clearAll(){
   wire();
   document.getElementById("genBtn").onclick=openModal;
   document.getElementById("genBtn2").onclick=openModal;
-  document.getElementById("jsonBtn").onclick=()=>download("reassessment_oct-2026_data.json",
-    JSON.stringify({ questionnaire:"recalibration", version:"2026-06", variant:"jd-reassessment-2026-10", exported:new Date().toISOString(), answers:state },null,2),
-    "application/json");
+  const exportJson=()=>JSON.stringify({ questionnaire:"recalibration", version:"2026-06", variant:"jd-reassessment-2026-10", exported:new Date().toISOString(), answers:state },null,2);
+  const jsonBtn=document.getElementById("jsonBtn");
+  if(IS_PHONE){
+    jsonBtn.textContent="Copy data";
+    jsonBtn.onclick=async()=>{
+      const text=exportJson();
+      if(await copyText(text)){ jsonBtn.textContent="Copied ✓"; setTimeout(()=>jsonBtn.textContent="Copy data",1500); }
+      else showText(text);
+    };
+    document.getElementById("downloadBtn").hidden=true;
+  } else {
+    jsonBtn.onclick=()=>download("reassessment_oct-2026_data.json", exportJson(), "application/json");
+  }
   document.getElementById("clearBtn").onclick=clearAll;
   document.getElementById("closeModal").onclick=closeModal;
   document.getElementById("copyBtn").onclick=copyOut;
